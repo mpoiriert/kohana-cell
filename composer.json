@@ -1,0 +1,35 @@
+{
+    "name": "mpoiriert/kohana-cell",
+    "type": "library",
+    "minimum-stability": "dev",
+    "description": "Bridge to use Nucleus in Kohana",
+    "keywords": ["framework","bridge","nucleus","kohana"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Martin Poirier Theoret",
+            "email": "mpoiriert@gmail.com"
+        }
+    ],
+    "require-dev": {
+        "kohana/kohana": "3.2.2",
+        "mpoiriert/nucleus": "dev-master"
+    },
+    "repositories": [
+        {
+            "type": "package",
+            "package": {
+                "name": "kohana/kohana",
+                "version": "3.2.2",
+                "dist": {"url": "https://github.com/downloads/kohana/kohana/kohana-3.2.2.zip", "type": "zip"},
+                "autoload": {"classmap": ["."]}
+            }
+        }
+    ],
+    "autoload": {
+        "psr-0": {"Nucleus\\Cell\\Kohana": "src/"},
+        "classmap": [
+            "temp"
+        ]
+    }
+}

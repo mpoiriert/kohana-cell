@@ -1,0 +1,7 @@
+{
+    "services": {
+        "aspect.kohanaMutation": {
+            "class": "Nucleus\\Cell\\Kohana\\KohanaMutation"
+        }
+    }
+}

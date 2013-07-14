@@ -1,0 +1,6 @@
+{
+    "imports": [
+        "Nucleus/Framework",
+        "src/Nucleus/Cell/Kohana"
+    ]
+}
