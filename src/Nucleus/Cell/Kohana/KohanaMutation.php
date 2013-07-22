@@ -13,6 +13,7 @@ use Nucleus\Routing\Router;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Route;
 use Symfony\Component\HttpFoundation\Request as NucleusRequest;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
 /**
  * Description of KohanaAspect
@@ -40,6 +41,26 @@ class KohanaMutation extends BaseAspect
                 'route' => $route
             );
         } catch (ResourceNotFoundException $e) {
+            return $invocation->proceed();
+        }
+    }
+    
+    /**
+     * @param MethodInvocation $invocation Invocation
+     *
+     * @Go\Lang\Annotation\Around("execution(public Kohana_Route::url(*))")
+     */
+    public function aroundKohanaRouteUrl(MethodInvocation $invocation)
+    {
+        $arguments = $invocation->getArguments();
+        try {
+            //Third argument is protocole but we do nothing with it for now
+            list($name, $parameters) = $arguments;
+            if(is_null($parameters)) {
+                $parameters = array();
+            }
+            return $this->getRouter()->generate($name, $parameters);
+        } catch (RouteNotFoundException $e) {
             return $invocation->proceed();
         }
     }

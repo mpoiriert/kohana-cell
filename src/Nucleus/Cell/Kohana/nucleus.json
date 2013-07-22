@@ -2,6 +2,14 @@
     "services": {
         "aspect.kohanaMutation": {
             "class": "Nucleus\\Cell\\Kohana\\KohanaMutation"
+        },
+        "kohanaMutationTestController": {
+            "class": "Nucleus\\Cell\\Kohana\\TestController"
+        },
+        "templateFileLoader": {
+            "configuration": {
+                "paths": ["<?php echo str_replace('\\','/',__DIR__) . '/resources/views' ?>"]
+            }
         }
     }
 }
