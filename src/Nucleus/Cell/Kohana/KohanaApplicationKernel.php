@@ -141,12 +141,12 @@ abstract class KohanaApplicationKernel extends SingletonApplicationKernel
         if (!defined('KOHANA_START_MEMORY')) {
             define('KOHANA_START_MEMORY', memory_get_usage());
         }
+        
+        require APPPATH . 'bootstrap' . EXT;
     }
 
     public function handleRequest()
     {
-        require APPPATH . 'bootstrap' . EXT;
-
         echo Request::factory()
             ->execute()
             ->send_headers(TRUE)
