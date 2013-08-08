@@ -40,11 +40,6 @@ abstract class KohanaApplicationKernel extends SingletonApplicationKernel
      */
     protected $system = 'system';
 
-    public function __construct()
-    {
-        $this->kohanaInitialization();
-    }
-
     protected function initiliazeKohanaVariables()
     {
         /**
@@ -101,7 +96,7 @@ abstract class KohanaApplicationKernel extends SingletonApplicationKernel
         }
     }
     
-    protected function kohanaInitialization()
+    protected function postCreationInitiliazation()
     {
         $this->initiliazeKohanaVariables();
         
