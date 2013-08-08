@@ -17,7 +17,7 @@ use Route;
 class TestController
 {
     /**
-     * @\Nucleus\Routing\Route(name="kohana-cell-documentation", path="/nucleus/kohana-cell/documentation")
+     * @\Nucleus\IService\Routing\Route(name="kohana-cell-documentation", path="/nucleus/kohana-cell/documentation")
      * @\Nucleus\IService\FrontController\ViewDefinition(template="/kohana-cell/documentation.twig")
      */
     public function documentation()

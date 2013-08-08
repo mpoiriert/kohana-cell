@@ -21,8 +21,14 @@ class ApplicationKernel extends KohanaApplicationKernel
             ->setDebug(true);
     }
     
-    public function bootstrap()
+    protected function checkInstallation()
     {
-        require_once __DIR__ . '/../vendor/kohana/kohana/index.php';
+        //parent::checkInstallation();
+    }
+    
+    
+    protected function getDocRoot()
+    {
+        return realpath(__DIR__ . '/../vendor/kohana/kohana/') . DIRECTORY_SEPARATOR;
     }
 }

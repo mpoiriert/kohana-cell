@@ -27,9 +27,6 @@
         }
     ],
     "autoload": {
-        "psr-0": {"Nucleus\\Cell\\Kohana": "src/"},
-        "classmap": [
-            "temp"
-        ]
+        "psr-0": {"Nucleus\\Cell\\Kohana": "src/"}
     }
 }
