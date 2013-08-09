@@ -17,6 +17,7 @@ class ApplicationKernel extends KohanaApplicationKernel
     protected function getDnaConfiguration()
     {
         return parent::getDnaConfiguration()
+            ->setConfiguration(__DIR__)
             ->setCachePath(dirname(__DIR__) . '/cache')
             ->setDebug(true);
     }
