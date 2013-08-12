@@ -30,6 +30,24 @@ class KohanaMutation extends BaseAspect
     /**
      * @param MethodInvocation $invocation Invocation
      *
+     * @Go\Lang\Annotation\Around("execution(public Kohana_I18n::lang(*))")
+     */
+    public function aroundKohanaI18nLang(MethodInvocation $invocation)
+    {
+        $arguments = $invocation->getArguments();
+        $before = $invocation->getMethod()->invoke($invocation->getThis(),null);
+        
+        $result = $invocation->proceed();
+        if($before != $result) {
+            $this->getEventDispatcher()->dispatch('Culture.change',null,array('culture'=>$result));
+        }
+        
+        return $result;
+    }
+    
+    /**
+     * @param MethodInvocation $invocation Invocation
+     *
      * @Go\Lang\Annotation\Around("execution(public Kohana_Request::process_uri(*))")
      */
     public function aroundKohanaRequestProcessUri(MethodInvocation $invocation)
