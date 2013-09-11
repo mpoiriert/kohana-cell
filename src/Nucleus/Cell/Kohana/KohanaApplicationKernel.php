@@ -9,6 +9,7 @@ namespace Nucleus\Cell\Kohana;
 
 use Nucleus\Framework\SingletonApplicationKernel;
 use Request;
+use Cookie;
 
 /**
  * Description of ApplicationKernel
@@ -40,6 +41,8 @@ abstract class KohanaApplicationKernel extends SingletonApplicationKernel
      */
     protected $system = 'system';
 
+    protected $cookieSalt = 'default';
+    
     protected function initiliazeKohanaVariables()
     {
         /**
@@ -141,6 +144,9 @@ abstract class KohanaApplicationKernel extends SingletonApplicationKernel
     protected function postCreation()
     {
         require APPPATH . 'bootstrap' . EXT;
+        if(!Cookie::$salt) {
+            Cookie::$salt = $this->cookieSalt;
+        }
     }
 
     public function handleRequest()

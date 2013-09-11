@@ -14,6 +14,8 @@ use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Route;
 use Symfony\Component\HttpFoundation\Request as NucleusRequest;
 use Request as KohanaRequest;
+use Response as KohanaResponse;
+use Symfony\Component\HttpFoundation\Response as NucleusResponse;
 use Nucleus\IService\EventDispatcher\IEventDispatcherService;
 use ArrayObject;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
@@ -151,10 +153,25 @@ class KohanaMutation extends BaseAspect
             ->execute($service['name'], $service['method'], $request);
 
         $kohanaResponse = $kohanaRequest->create_response();
-        $kohanaResponse->body($response->getContent());
-        $kohanaResponse->headers($response->headers->all());
+        $this->mergeResponse($kohanaResponse, $response);
         KohanaRequest::$current = $previousKohanaRequest;
         return $kohanaResponse;
+    }
+    
+    private function mergeResponse(KohanaResponse $kohanaResponse, NucleusResponse $nucleusResponse)
+    {
+        $kohanaResponse->body($nucleusResponse->getContent());
+        $kohanaResponse->headers($nucleusResponse->headers->all());
+        foreach($nucleusResponse->headers->getCookies() as $cookie) {
+            /* @var $cookie \Symfony\Component\HttpFoundation\Cookie */
+            $kohanaResponse->cookie(
+                $cookie->getName(), 
+                array(
+                    'value' => $cookie->getValue(),
+                    'expiration' => $cookie->getExpiresTime()
+                )
+            );
+        }
     }
     
     /**

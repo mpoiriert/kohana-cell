@@ -1,6 +1,6 @@
 {
     "imports": [
-        "Nucleus/Framework",
+        "mpoiriert/nucleus/src/Nucleus/Framework",
         "src/Nucleus/Cell/Kohana"
     ]
 }

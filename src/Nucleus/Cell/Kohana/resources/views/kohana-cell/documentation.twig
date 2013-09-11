@@ -1,3 +1,11 @@
-
-<a href="{{ result.documentation_url }}">This link to the current documentation page.</a>
-<a href="{{ result.default_url }}">This link to the default page.</a>
+<ul>
+    <li><a href="{{ result.documentation_url }}">This link to the current documentation page.</a></li>
+    <li><a href="{{ result.default_url }}">This link to the default page.</a></li>
+    <li>Last cookie call (if any): {{ result.time }}</li>
+</ul>
+<p>
+Raw cookie
+    <script type="text/javascript">
+        document.write(document.cookie);
+    </script>
+</p>
