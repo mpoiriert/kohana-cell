@@ -162,6 +162,7 @@ class KohanaMutation extends BaseAspect
     {
         $kohanaResponse->body($nucleusResponse->getContent());
         $kohanaResponse->headers($nucleusResponse->headers->all());
+        $kohanaResponse->status($nucleusResponse->getStatusCode());
         foreach($nucleusResponse->headers->getCookies() as $cookie) {
             /* @var $cookie \Symfony\Component\HttpFoundation\Cookie */
             $kohanaResponse->cookie(
