@@ -115,6 +115,24 @@ class KohanaMutation extends BaseAspect
         }
     }
     
+    private function createNucleusRequest(KohanaRequest $kohanaRequest, $kohanaParameters)
+    {
+        if(!isset($kohanaParameters['_nucleus'])) {
+            $kohanaParameters['_nucleus'] = array(); 
+        }
+        
+        $request = new NucleusRequest(
+            $kohanaRequest->query(),
+            $kohanaRequest->post(),
+            $kohanaParameters['_nucleus'],
+            $kohanaRequest->cookie(),
+            $_FILES,
+            $_SERVER
+        );
+         
+        return $request;
+    }
+    
      /**
      * @param MethodInvocation $invocation Invocation
      *
@@ -127,6 +145,10 @@ class KohanaMutation extends BaseAspect
         /* @var $kohanaRequest \Request */
         $kohanaParameters = $kohanaRequest->param();
         
+        $request = $this->createNucleusRequest($kohanaRequest, $kohanaParameters);
+        //We do this now so a controller in kohana can generate route properly from nucleus
+        $this->getRouter()->setCurrentRequest($request);
+        
         if(!isset($kohanaParameters['_nucleus'])) {
             return $invocation->proceed();
         }
@@ -134,16 +156,6 @@ class KohanaMutation extends BaseAspect
         $previousKohanaRequest = KohanaRequest::$current;
         
         KohanaRequest::$current = $kohanaRequest;
-        
-        $request = new NucleusRequest(
-            $kohanaRequest->query(),
-            $kohanaRequest->post(),
-            $kohanaParameters['_nucleus'],
-            $kohanaRequest->cookie(),
-            $_FILES,
-            $_SERVER
-            //Body might be needed here
-        );
         
         $request->request->add($kohanaParameters['_nucleus']);
         
