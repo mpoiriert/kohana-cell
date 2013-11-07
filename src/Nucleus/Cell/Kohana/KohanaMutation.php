@@ -24,7 +24,7 @@ use Symfony\Component\Routing\Exception\RouteNotFoundException;
  * Description of KohanaAspect
  *
  * @author Martin
- * 
+ *
  * @Aspect
  */
 class KohanaMutation extends BaseAspect
@@ -37,16 +37,14 @@ class KohanaMutation extends BaseAspect
     public function aroundKohanaI18nLang(MethodInvocation $invocation)
     {
         $arguments = $invocation->getArguments();
-        $before = $invocation->getMethod()->invoke($invocation->getThis(),null);
-        
         $result = $invocation->proceed();
-        if($before != $result) {
+        if(array_filter($arguments)) {
             $this->getEventDispatcher()->dispatch('Culture.change',null,array('culture'=>$result));
         }
-        
+
         return $result;
     }
-    
+
     /**
      * @param MethodInvocation $invocation Invocation
      *
@@ -67,13 +65,13 @@ class KohanaMutation extends BaseAspect
             );
 
             $this->getEventDispatcher()->dispatch('KohanaMutation.processUri',$params);
-    
+
             return $params->getArrayCopy();
         } catch (ResourceNotFoundException $e) {
             return $invocation->proceed();
         }
     }
-    
+
     /**
      * @param MethodInvocation $invocation Invocation
      *
@@ -82,16 +80,16 @@ class KohanaMutation extends BaseAspect
     public function beforeAddRoute(MethodInvocation $invocation)
     {
         list($name, $path, $defaults, $requirements, $options, $host, $schemes, $methods) = $invocation->getArguments();
-       
+
         if(isset($defaults['_culture']) && $defaults['_culture']) {
             $name = $defaults['_culture'] . ':i18n:' . $name;
         }
-        
+
         Route::set($name, $path)->defaults($defaults);
-        
+
         $invocation->proceed();
     }
-    
+
     /**
      * @param MethodInvocation $invocation Invocation
      *
@@ -102,25 +100,25 @@ class KohanaMutation extends BaseAspect
         $arguments = $invocation->getArguments();
         $route = $invocation->getThis();
         $name = Route::name($route);
-        
+
         $parameters = $arguments[0];
         if(empty($parameters)) {
             $parameters = array();
         }
-        
+
         try {
             return $this->getRouter()->generate($name, $parameters);
         } catch (RouteNotFoundException $e) {
             return $invocation->proceed();
         }
     }
-    
+
     private function createNucleusRequest(KohanaRequest $kohanaRequest, $kohanaParameters)
     {
         if(!isset($kohanaParameters['_nucleus'])) {
-            $kohanaParameters['_nucleus'] = array(); 
+            $kohanaParameters['_nucleus'] = array();
         }
-        
+
         $request = new NucleusRequest(
             $kohanaRequest->query(),
             $kohanaRequest->post(),
@@ -129,11 +127,11 @@ class KohanaMutation extends BaseAspect
             $_FILES,
             $_SERVER
         );
-         
+
         return $request;
     }
-    
-     /**
+
+    /**
      * @param MethodInvocation $invocation Invocation
      *
      * @Go\Lang\Annotation\Around("execution(public Kohana_Request_Client_Internal->execute_request(*))")
@@ -144,23 +142,23 @@ class KohanaMutation extends BaseAspect
         $kohanaRequest = $arguments[0];
         /* @var $kohanaRequest \Request */
         $kohanaParameters = $kohanaRequest->param();
-        
+
         $request = $this->createNucleusRequest($kohanaRequest, $kohanaParameters);
         //We do this now so a controller in kohana can generate route properly from nucleus
         $this->getRouter()->setCurrentRequest($request);
-        
+
         if(!isset($kohanaParameters['_nucleus'])) {
             return $invocation->proceed();
         }
 
         $previousKohanaRequest = KohanaRequest::$current;
-        
+
         KohanaRequest::$current = $kohanaRequest;
-        
+
         $request->request->add($kohanaParameters['_nucleus']);
-        
+
         $service = $request->request->get('_service');
-           
+
         $response = $this->getFrontController()
             ->execute($service['name'], $service['method'], $request);
 
@@ -169,7 +167,7 @@ class KohanaMutation extends BaseAspect
         KohanaRequest::$current = $previousKohanaRequest;
         return $kohanaResponse;
     }
-    
+
     private function mergeResponse(KohanaResponse $kohanaResponse, NucleusResponse $nucleusResponse)
     {
         $kohanaResponse->body($nucleusResponse->getContent());
@@ -178,7 +176,7 @@ class KohanaMutation extends BaseAspect
         foreach($nucleusResponse->headers->getCookies() as $cookie) {
             /* @var $cookie \Symfony\Component\HttpFoundation\Cookie */
             $kohanaResponse->cookie(
-                $cookie->getName(), 
+                $cookie->getName(),
                 array(
                     'value' => $cookie->getValue(),
                     'expiration' => $cookie->getExpiresTime()
@@ -186,7 +184,7 @@ class KohanaMutation extends BaseAspect
             );
         }
     }
-    
+
     /**
      * @return IEventDispatcherService
      */
@@ -194,7 +192,7 @@ class KohanaMutation extends BaseAspect
     {
         return $this->getServiceContainer()->getServiceByName(IEventDispatcherService::NUCLEUS_SERVICE_NAME);
     }
-   
+
     /**
      * @return \Nucleus\FrontController\FrontController
      */
@@ -202,7 +200,7 @@ class KohanaMutation extends BaseAspect
     {
         return $this->getServiceContainer()->getServiceByName('frontController');
     }
-    
+
     /**
      * @return Router
      */
